@@ -81,6 +81,14 @@ app/      The Android app.
 
 ## Building
 
+The easiest way, on Linux, macOS or Windows (in WSL): one script downloads everything (a JDK 17 if needed, the Android SDK and the libraries) into `.local/` and builds the debug and release APKs:
+
+```sh
+./scripts/setup-and-build.sh
+```
+
+Or by hand:
+
 ```sh
 ./gradlew :app:assembleDebug          # APK in app/build/outputs/apk/debug/
 ./gradlew :engine:test                # swap-engine tests (uses /bin/sh)
