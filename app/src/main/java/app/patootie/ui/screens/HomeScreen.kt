@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
@@ -276,6 +277,15 @@ private fun CloneCard(clone: Clone, live: Boolean, sizeKb: Long?, actions: HomeA
                     )
                 }
             }
+            BubbleButton(
+                if (showActions) "Hide options" else "Options",
+                MaterialTheme.colorScheme.surfaceVariant,
+                icon = Icons.Default.MoreVert,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                size = 40.dp,
+                onClick = { showActions = !showActions },
+            )
+            Spacer(Modifier.width(8.dp))
             BubbleButton(
                 "Launch ${clone.name}",
                 MaterialTheme.colorScheme.secondary,
