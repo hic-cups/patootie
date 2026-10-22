@@ -13,8 +13,10 @@ data class ShellResult(val exitCode: Int, val stdout: String, val stderr: String
  * Runs one script per call in a fresh `su` process, fed through stdin so the
  * script never appears on a command line. Magisk, KernelSU and APatch all ship
  * a `su` that reads commands from stdin. Tests swap in plain `sh`.
+ * `--mount-master` runs it in the global mount namespace: Patootie's own one
+ * hides other apps' data dirs (Android 11+ app data isolation).
  */
-class RootShell(private val command: List<String> = listOf("su")) {
+class RootShell(private val command: List<String> = listOf("su", "--mount-master")) {
 
     suspend fun run(script: String): ShellResult = withContext(Dispatchers.IO) {
         val process = try {
