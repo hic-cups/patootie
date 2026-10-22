@@ -17,11 +17,31 @@ android {
         versionName = "1.0"
     }
 
+    // Release signing comes from the environment (CI secrets) so the key never lives in the repo.
+    // Every release must use the same key, or Android refuses to install it over the previous one.
+    val releaseKeystore = System.getenv("PATOOTIE_KEYSTORE_FILE")?.let(::file)?.takeIf { it.exists() }
+    signingConfigs {
+        if (releaseKeystore != null) {
+            create("release") {
+                storeFile = releaseKeystore
+                storePassword = System.getenv("PATOOTIE_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("PATOOTIE_KEY_ALIAS")
+                keyPassword = System.getenv("PATOOTIE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = if (releaseKeystore != null) {
+                signingConfigs.getByName("release")
+            } else {
+                logger.warn("PATOOTIE_KEYSTORE_FILE not set: signing the release build with the debug key.")
+                signingConfigs.getByName("debug")
+            }
         }
     }
     compileOptions {

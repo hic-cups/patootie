@@ -91,3 +91,27 @@ app/      The Android app.
 Requires JDK 17+ and the Android SDK (platform 35). CI (`.github/workflows/build.yml`) runs the engine tests under `sh`, `mksh` and `busybox`, builds the APK, and attaches it to every run as `patootie-debug-apk`.
 
 Install the APK, open Patootie, and grant root when your root manager asks.
+
+## Release builds
+
+`./gradlew :app:assembleRelease` builds a minified (R8) release APK in `app/build/outputs/apk/release/`. CI builds one on every push (artifact `patootie-release-apk`) and, when you push a tag like `v1.0`, also publishes it as a GitHub Release.
+
+Android only installs an update if it is signed with the same key as the installed app, so set up your own key once:
+
+```sh
+keytool -genkeypair -v -keystore patootie.jks -alias patootie -keyalg RSA -keysize 4096 -validity 10000
+base64 -w0 patootie.jks   # paste the output into the secret below
+```
+
+Then add these repository secrets (Settings → Secrets and variables → Actions):
+
+| Secret | Value |
+|---|---|
+| `PATOOTIE_KEYSTORE_BASE64` | the base64 output above |
+| `PATOOTIE_KEYSTORE_PASSWORD` | the keystore password |
+| `PATOOTIE_KEY_ALIAS` | `patootie` |
+| `PATOOTIE_KEY_PASSWORD` | the key password |
+
+Keep `patootie.jks` and its passwords backed up somewhere safe; if you lose the key, you'll have to uninstall and reinstall to update. Without these secrets, the release APK is signed with a throwaway debug key and CI shows a warning.
+
+Locally, set the same names as environment variables, using `PATOOTIE_KEYSTORE_FILE=/path/to/patootie.jks` instead of the base64 one.
