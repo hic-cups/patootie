@@ -81,10 +81,13 @@ app/      The Android app.
 
 ## Building
 
-The easiest way, on Linux, macOS or Windows (in WSL): one script downloads everything (a JDK 17 if needed, the Android SDK and the libraries) into `.local/` and builds the debug and release APKs:
+The easiest way: one script downloads everything (a JDK 17 if needed, the Android SDK and the libraries) into `.local/` and builds the debug and release APKs.
 
 ```sh
-./scripts/setup-and-build.sh
+./scripts/setup-and-build.sh        # Linux / macOS
+```
+```bat
+scripts\setup-and-build.cmd        :: Windows (Command Prompt, or double-click it)
 ```
 
 Or by hand:
